@@ -1,5 +1,4 @@
 <?php
-
 $this->config['database'] = array(
     "HOSTNAME"=>"localhost",
     "DB_PORT"=>3306,
@@ -8,6 +7,4 @@ $this->config['database'] = array(
     "PASSWORD"=>"dev",
     "CHARSET"=>"UTF8"
 );
-
-
 ?>

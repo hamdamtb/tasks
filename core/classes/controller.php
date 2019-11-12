@@ -97,6 +97,7 @@ class Controller {
             if($res["success"]){
                 $_SESSION["success_message"] = $res["message"];
                 header('Location: /tasks');
+                return;
             } else {
                 $this->view($this->route[1].'/add', ["form_data" => $record_data, "error_message" => $res["message"]]);
                 return;
@@ -106,12 +107,18 @@ class Controller {
     }
 
     function editAction(){
+        if(!isset($_SESSION["is_logged"])){
+            $_SESSION["error_message"] = "У вас не достаточно прав!";
+            header('Location: /tasks');
+            return;
+        }
         $record_data = $_POST;
         if(!empty($record_data)){
             $result = $this->model()->update($record_data);
             if($result["success"]){
                 $_SESSION["success_message"] = $result["message"];
                 header('Location: /tasks');
+                return;
             } else {
                 $this->view($this->route[1]."/edit?{$record_data["id"]}", ["form_data" => $record_data, "error_message" => $result["message"]]);
                 return;
@@ -121,12 +128,14 @@ class Controller {
             if(empty($params["id"])){
                 $_SESSION["error_message"] = "ID запись не задан!";
                 header('Location: /tasks');
+                return;
             }
             $id = intval($params["id"]);
             $result = $this->model()->load($id);
             if(!$result["success"]){
                 $_SESSION["error_message"] = $result["message"];
                 header('Location: /tasks');
+                return;
             }
             $record_data = $result["data"];
             $id = $record_data[$this->model()->_tableIdField];
@@ -137,9 +146,15 @@ class Controller {
     }
 
     function deleteAction(){
+        if(!isset($_SESSION["is_logged"])){
+            $_SESSION["error_message"] = "У вас не достаточно прав!";
+            header('Location: /tasks');
+            return;
+        }
         if(empty($_GET["id"])){
             $_SESSION["error_message"] = "ID запись не задан!";
             header('Location: /tasks');
+            return;
         }
         $id = intval($_GET["id"]);
         $result = $this->model()->delete($id);
